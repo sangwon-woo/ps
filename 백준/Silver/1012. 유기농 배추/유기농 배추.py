@@ -1,24 +1,38 @@
 import sys
-sys.setrecursionlimit(3333)
-for tc in range(int(input())):
-    n,m,l=map(int,input().split())
-    d=[[0]*m for i in range(n)]
-    for i in range(l):
-        x,y=map(int,input().split())
-        d[x][y]=1
-    def f(i,j):
-        global d,n,m
-        if i<0 or i>=n or j<0 or j>=m or not d[i][j]:
-            return
-        d[i][j]=0
-        f(i+1,j)
-        f(i-1,j)
-        f(i,j+1)
-        f(i,j-1)
-    r=0
-    for i in range(n):
-        for j in range(m):
-            if d[i][j]:
-                r+=1
-                f(i,j)
-    print(r)
+sys.setrecursionlimit(10000)
+T = int(input())
+B, ck = [], []
+
+dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
+
+def dfs(x, y):
+    global B, ck
+    ck[x][y] = 1
+    for i in range(4):
+        xx, yy = x+dx[i], y+dy[i]
+        if B[xx][yy] == 0 or ck[xx][yy]:
+            continue
+        dfs(xx, yy)
+
+def process():
+    global B, ck
+    M, N, K = map(int, input().split())
+    B = [[0 for i in range(100)] for _ in range(100)]
+    ck = [[0 for i in range(100)] for _ in range(100)]
+
+    for _ in range(K):
+        X, Y = map(int, input().split())
+        B[Y+1][X+1] = 1
+
+    ans = 0
+
+    for i in range(1, N+1):
+        for j in range(1, M+1):
+            if B[i][j] == 0 or ck[i][j]:
+                continue
+            dfs(i, j)
+            ans += 1
+    print(ans)
+for _ in range(T):
+    process()
+    
